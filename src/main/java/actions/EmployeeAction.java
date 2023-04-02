@@ -16,9 +16,6 @@ public class EmployeeAction extends ActionBase {
 
     private EmployeeService service;
 
-    /**
-     * メソッドを実行する
-     */
     @Override
     public void process() throws ServletException, IOException {
 
@@ -29,14 +26,8 @@ public class EmployeeAction extends ActionBase {
         service.close();
     }
 
-    /**
-     * 一覧画面を表示する
-     * @throws ServletException
-     * @throws IOException
-     */
     public void index() throws ServletException, IOException {
         if (checkAdmin()) {
-
         int page = getPage();
         List<EmployeeView> employees = service.getPerPage(page);
 
@@ -52,11 +43,12 @@ public class EmployeeAction extends ActionBase {
             putRequestScope(AttributeConst.FLUSH, flush);
             removeSessionScope(AttributeConst.FLUSH);
         }
+        }
 
         forward(ForwardConst.FW_EMP_INDEX);
         }
 
-    }
+
     public void entryNew() throws ServletException, IOException {
         if (checkAdmin()) {
 
@@ -119,9 +111,10 @@ public void create() throws ServletException, IOException {
             }
         }
 
-        public void edit() throws ServletException, IOException {
-            if (checkAdmin()) {
 
+        public void edit() throws ServletException, IOException {
+
+            if (checkAdmin()) {
 
             EmployeeView ev = service.findOne(toNumber(getRequestParam(AttributeConst.EMP_ID)));
 
@@ -136,8 +129,9 @@ public void create() throws ServletException, IOException {
 
             forward(ForwardConst.FW_EMP_EDIT);
             }
-
         }
+
+
 
         public void update() throws ServletException, IOException {
 

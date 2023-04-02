@@ -28,80 +28,78 @@ public class LoginFilter implements Filter {
      * Default constructor.
      */
     public LoginFilter() {
-        // TODO Auto-generated constructor stub
     }
 
     /**
      * @see Filter#destroy()
      */
     public void destroy() {
-        // TODO Auto-generated method stub
     }
 
     /**
      * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
      */
-      public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-                throws IOException, ServletException {
-            String contextPath = ((HttpServletRequest) request).getContextPath();
-            String servletPath = ((HttpServletRequest) request).getServletPath();
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        String contextPath = ((HttpServletRequest) request).getContextPath();
+        String servletPath = ((HttpServletRequest) request).getServletPath();
 
-            if (servletPath.matches("/css.*")) {
-                chain.doFilter(request, response);
+        if (servletPath.matches("/css.*")) {
+            chain.doFilter(request, response);
 
+        } else {
+            HttpSession session = ((HttpServletRequest) request).getSession();
+
+            String action = request.getParameter(ForwardConst.ACT.getValue());
+            String command = request.getParameter(ForwardConst.CMD.getValue());
+
+            EmployeeView ev = (EmployeeView) session.getAttribute(AttributeConst.LOGIN_EMP.getValue());
+
+            if (ev == null) {
+
+                if (!(ForwardConst.ACT_AUTH.getValue().equals(action)
+                        && (ForwardConst.CMD_SHOW_LOGIN.getValue().equals(command)
+                                || ForwardConst.CMD_LOGIN.getValue().equals(command)))) {
+
+                    ((HttpServletResponse) response).sendRedirect(
+                            contextPath
+                                    + "?action=" + ForwardConst.ACT_AUTH.getValue()
+                                    + "&command=" + ForwardConst.CMD_SHOW_LOGIN.getValue());
+                    return;
+                }
             } else {
-                HttpSession session = ((HttpServletRequest) request).getSession();
 
-                String action = request.getParameter(ForwardConst.ACT.getValue());
-                String command = request.getParameter(ForwardConst.CMD.getValue());
+                if (ForwardConst.ACT_AUTH.getValue().equals(action)) {
 
-                EmployeeView ev = (EmployeeView) session.getAttribute(AttributeConst.LOGIN_EMP.getValue());
-
-                if (ev == null) {
-
-                    if (!(ForwardConst.ACT_AUTH.getValue().equals(action)
-                            && (ForwardConst.CMD_SHOW_LOGIN.getValue().equals(command)
-                                    || ForwardConst.CMD_LOGIN.getValue().equals(command)))) {
-
+                    if (ForwardConst.CMD_SHOW_LOGIN.getValue().equals(command)) {
                         ((HttpServletResponse) response).sendRedirect(
                                 contextPath
-                                        + "?action=" + ForwardConst.ACT_AUTH.getValue()
-                                        + "&command=" + ForwardConst.CMD_SHOW_LOGIN.getValue());
+                                        + "?action=" + ForwardConst.ACT_TOP.getValue()
+                                        + "&command=" + ForwardConst.CMD_INDEX.getValue());
                         return;
-                    }
-                } else {
 
-                    if (ForwardConst.ACT_AUTH.getValue().equals(action)) {
+                    } else if (ForwardConst.CMD_LOGOUT.getValue().equals(command)) {
 
-                        if (ForwardConst.CMD_SHOW_LOGIN.getValue().equals(command)) {
-                            ((HttpServletResponse) response).sendRedirect(
-                                    contextPath
-                                            + "?action=" + ForwardConst.ACT_TOP.getValue()
-                                            + "&command=" + ForwardConst.CMD_INDEX.getValue());
-                            return;
+                    } else {
 
-                        } else if (ForwardConst.CMD_LOGOUT.getValue().equals(command)) {
+                        String forward = String.format("/WEB-INF/views/%s.jsp", "error/unknown");
+                        RequestDispatcher dispatcher = request.getRequestDispatcher(forward);
+                        dispatcher.forward(request, response);
 
-                        } else {
+                        return;
 
-                            String forward = String.format("/WEB-INF/views/%s.jsp", "error/unknown");
-                            RequestDispatcher dispatcher = request.getRequestDispatcher(forward);
-                            dispatcher.forward(request, response);
-
-                            return;
-
-                        }
                     }
                 }
-                chain.doFilter(request, response);
             }
+
+            chain.doFilter(request, response);
         }
+    }
 
     /**
      * @see Filter#init(FilterConfig)
      */
     public void init(FilterConfig fConfig) throws ServletException {
-        // TODO Auto-generated method stub
     }
 
 }
