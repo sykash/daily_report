@@ -105,7 +105,7 @@ public class ReportAction extends ActionBase {
             }
         }
     }
-    
+
     public void show() throws ServletException, IOException {
 
         ReportView rv = service.findOne(toNumber(getRequestParam(AttributeConst.REP_ID)));
@@ -115,10 +115,29 @@ public class ReportAction extends ActionBase {
 
         } else {
 
-            putRequestScope(AttributeConst.REPORT, rv); 
+            putRequestScope(AttributeConst.REPORT, rv);
 
             forward(ForwardConst.FW_REP_SHOW);
         }
+    }
+    public void edit() throws ServletException, IOException {
+
+        ReportView rv = service.findOne(toNumber(getRequestParam(AttributeConst.REP_ID)));
+
+        EmployeeView ev = (EmployeeView) getSessionScope(AttributeConst.LOGIN_EMP);
+
+        if (rv == null || ev.getId() != rv.getEmployee().getId()) {
+
+            forward(ForwardConst.FW_ERR_UNKNOWN);
+
+        } else {
+
+            putRequestScope(AttributeConst.TOKEN, getTokenId());
+            putRequestScope(AttributeConst.REPORT, rv);
+
+            forward(ForwardConst.FW_REP_EDIT);
+        }
+
     }
 
 
