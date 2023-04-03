@@ -18,27 +18,15 @@ import actions.views.EmployeeView;
 import constants.AttributeConst;
 import constants.ForwardConst;
 
-/**
- * Servlet Filter implementation class LoginFilter
- */
 @WebFilter("/*")
 public class LoginFilter implements Filter {
 
-    /**
-     * Default constructor.
-     */
     public LoginFilter() {
     }
 
-    /**
-     * @see Filter#destroy()
-     */
     public void destroy() {
     }
 
-    /**
-     * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
-     */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         String contextPath = ((HttpServletRequest) request).getContextPath();
@@ -96,9 +84,6 @@ public class LoginFilter implements Filter {
         }
     }
 
-    /**
-     * @see Filter#init(FilterConfig)
-     */
     public void init(FilterConfig fConfig) throws ServletException {
     }
 
